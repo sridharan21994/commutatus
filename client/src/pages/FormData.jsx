@@ -7,8 +7,10 @@ class FormData extends React.Component{
 constructor(props){
     super(props);
     this.state={
-
+        item:{},
+        error:""
     }
+    this.onChange=this.onChange.bind(this);
 }
 
 componentWillMount(){
@@ -17,7 +19,7 @@ componentWillMount(){
         response=JSON.parse(JSON.stringify(response.data));
                 console.log(response,typeof response);
       this.setState({
-            title: response.title,
+           item:{ title: response.title,
             applications_close_date: response.applications_close_date,
             earliest_start_date: response.earliest_start_date,
             latest_end_date: response.latest_end_date,
@@ -26,24 +28,42 @@ componentWillMount(){
             skills: response.skills,
             selection_process: response.role_info.selection_process,
             salary: response.specifics_info.salary,
-            role_info_city: response.role_info.city
+            role_info_city: response.role_info.city}
       });
         console.log(this.state);
     })
     .catch(err=>{console.log(err)});
   }
+onChange(event){
+    const field = event.target.name;
+    const item = this.state.item;
+    item[field] = event.target.value;
+
+    this.setState({
+      item,
+      error:""        
+    });
+  
+}
+renderList(item,index){
+    return ( <div key={index}>
+           <TextField
+            onChange={this.onChange}
+            hintText={item}
+            floatingLabelFixed={true}
+            floatingLabelText={item}
+            type="text"
+            name={item}
+            value={this.state.item[item]?this.state.item[item]:""}
+            />
+            </div>)
+}
 
 render(){
      return (
         <Card>
-            <TextField
-          hintText="title"
-          floatingLabelFixed={true}
-          floatingLabelText="title"
-          type="text"
-          name="title"
-          value="title"
-        />
+            <p className="error">{this.state.error}</p>
+            {Object.keys(this.state.item).map(this.renderList.bind(this))}
         </Card>
   );
 }

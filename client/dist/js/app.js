@@ -39157,7 +39157,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -39187,65 +39187,96 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var FormData = function (_React$Component) {
-	  _inherits(FormData, _React$Component);
+	    _inherits(FormData, _React$Component);
 
-	  function FormData(props) {
-	    _classCallCheck(this, FormData);
+	    function FormData(props) {
+	        _classCallCheck(this, FormData);
 
-	    var _this = _possibleConstructorReturn(this, (FormData.__proto__ || Object.getPrototypeOf(FormData)).call(this, props));
+	        var _this = _possibleConstructorReturn(this, (FormData.__proto__ || Object.getPrototypeOf(FormData)).call(this, props));
 
-	    _this.state = {};
-	    return _this;
-	  }
-
-	  _createClass(FormData, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var _this2 = this;
-
-	      _axios2.default.get("http://gisapi-web-staging-1636833739.eu-west-1.elb.amazonaws.com/v2/opportunities/529?access_token=dd0df21c8af5d929dff19f74506c4a8153d7acd34306b9761fd4a57cfa1d483c").then(function (response) {
-	        response = JSON.parse(JSON.stringify(response.data));
-	        console.log(response, typeof response === 'undefined' ? 'undefined' : _typeof(response));
-	        _this2.setState({
-	          title: response.title,
-	          applications_close_date: response.applications_close_date,
-	          earliest_start_date: response.earliest_start_date,
-	          latest_end_date: response.latest_end_date,
-	          description: response.description,
-	          backgrounds: response.backgrounds,
-	          skills: response.skills,
-	          selection_process: response.role_info.selection_process,
-	          salary: response.specifics_info.salary,
-	          role_info_city: response.role_info.city
-	        });
-	        console.log(_this2.state);
-	      }).catch(function (err) {
-	        console.log(err);
-	      });
+	        _this.state = {
+	            item: {},
+	            error: ""
+	        };
+	        _this.onChange = _this.onChange.bind(_this);
+	        return _this;
 	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        _Card.Card,
-	        null,
-	        _react2.default.createElement(_TextField2.default, {
-	          hintText: 'title',
-	          floatingLabelFixed: true,
-	          floatingLabelText: 'title',
-	          type: 'text',
-	          name: 'title',
-	          value: 'title'
-	        })
-	      );
-	    }
-	  }]);
 
-	  return FormData;
+	    _createClass(FormData, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            var _this2 = this;
+
+	            _axios2.default.get("http://gisapi-web-staging-1636833739.eu-west-1.elb.amazonaws.com/v2/opportunities/529?access_token=dd0df21c8af5d929dff19f74506c4a8153d7acd34306b9761fd4a57cfa1d483c").then(function (response) {
+	                response = JSON.parse(JSON.stringify(response.data));
+	                console.log(response, typeof response === 'undefined' ? 'undefined' : _typeof(response));
+	                _this2.setState({
+	                    item: { title: response.title,
+	                        applications_close_date: response.applications_close_date,
+	                        earliest_start_date: response.earliest_start_date,
+	                        latest_end_date: response.latest_end_date,
+	                        description: response.description,
+	                        backgrounds: response.backgrounds,
+	                        skills: response.skills,
+	                        selection_process: response.role_info.selection_process,
+	                        salary: response.specifics_info.salary,
+	                        role_info_city: response.role_info.city }
+	                });
+	                console.log(_this2.state);
+	            }).catch(function (err) {
+	                console.log(err);
+	            });
+	        }
+	    }, {
+	        key: 'onChange',
+	        value: function onChange(event) {
+	            var field = event.target.name;
+	            var item = this.state.item;
+	            item[field] = event.target.value;
+
+	            this.setState({
+	                item: item,
+	                error: ""
+	            });
+	        }
+	    }, {
+	        key: 'renderList',
+	        value: function renderList(item, index) {
+	            return _react2.default.createElement(
+	                'div',
+	                { key: index },
+	                _react2.default.createElement(_TextField2.default, {
+	                    onChange: this.onChange,
+	                    hintText: item,
+	                    floatingLabelFixed: true,
+	                    floatingLabelText: item,
+	                    type: 'text',
+	                    name: item,
+	                    value: this.state.item[item] ? this.state.item[item] : ""
+	                })
+	            );
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                _Card.Card,
+	                null,
+	                _react2.default.createElement(
+	                    'p',
+	                    { className: 'error' },
+	                    this.state.error
+	                ),
+	                Object.keys(this.state.item).map(this.renderList.bind(this))
+	            );
+	        }
+	    }]);
+
+	    return FormData;
 	}(_react2.default.Component);
 
 	FormData.contextTypes = {
-	  router: _react.PropTypes.object.isRequired
+	    router: _react.PropTypes.object.isRequired
 	};
 
 	exports.default = FormData;

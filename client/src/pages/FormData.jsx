@@ -19,8 +19,6 @@ componentWillMount(){
     axios.get("http://gisapi-web-staging-1636833739.eu-west-1.elb.amazonaws.com/v2/opportunities/529?access_token=dd0df21c8af5d929dff19f74506c4a8153d7acd34306b9761fd4a57cfa1d483c")
     .then(response=>{
         response=JSON.parse(JSON.stringify(response.data));
-                console.log(response,typeof response);
-
                 response.modifiedSkills = "";
                 response.modifiedBackgrounds = "";
                 response.skills.map(function(item,index){
@@ -42,7 +40,6 @@ componentWillMount(){
             salary: response.specifics_info.salary,
             role_info_city: response.role_info.city}
       });
-        console.log(this.state);
     })
     .catch(err=>{console.log(err)});
   }
@@ -63,7 +60,23 @@ onChange(event){
   
 }
 submitForm(){
-     
+    var data = {opportunity:{}};
+    data.opportunity.skills=[];
+    data.opportunity.backgrounds=[];
+    this.state.item.skills.split(", ").map(function(item){
+       data.opportunity.skills.push({"name":item});
+    });
+    this.state.item.backgrounds.split(", ").map(function(item){
+       data.opportunity.backgrounds.push({"name":item});
+    });
+    data.opportunity = Object.assign({},this.state.item, {backgrounds: data.opportunity.backgrounds},{skills:data.opportunity.skils});
+     axios.patch("http://gisapi-web-staging-1636833739.eu-west-1.elb.amazonaws.com/v2/opportunities/529?access_token=dd0df21c8af5d929dff19f74506c4a8153d7acd34306b9761fd4a57cfa1d483c",data)
+     .then(response=>{
+         console.log(response);
+     })
+        .catch(err=>{
+            console.log(err);
+        })
 }
 renderList(item,index){
     return ( <div style={{textAlign:"center"}} key={index}>

@@ -39160,8 +39160,6 @@
 	    value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
@@ -39214,8 +39212,6 @@
 
 	            _axios2.default.get("http://gisapi-web-staging-1636833739.eu-west-1.elb.amazonaws.com/v2/opportunities/529?access_token=dd0df21c8af5d929dff19f74506c4a8153d7acd34306b9761fd4a57cfa1d483c").then(function (response) {
 	                response = JSON.parse(JSON.stringify(response.data));
-	                console.log(response, typeof response === 'undefined' ? 'undefined' : _typeof(response));
-
 	                response.modifiedSkills = "";
 	                response.modifiedBackgrounds = "";
 	                response.skills.map(function (item, index) {
@@ -39237,7 +39233,6 @@
 	                        salary: response.specifics_info.salary,
 	                        role_info_city: response.role_info.city }
 	                });
-	                console.log(_this2.state);
 	            }).catch(function (err) {
 	                console.log(err);
 	            });
@@ -39263,7 +39258,23 @@
 	        }
 	    }, {
 	        key: 'submitForm',
-	        value: function submitForm() {}
+	        value: function submitForm() {
+	            var data = { opportunity: {} };
+	            data.opportunity.skills = [];
+	            data.opportunity.backgrounds = [];
+	            this.state.item.skills.split(", ").map(function (item) {
+	                data.opportunity.skills.push({ "name": item });
+	            });
+	            this.state.item.backgrounds.split(", ").map(function (item) {
+	                data.opportunity.backgrounds.push({ "name": item });
+	            });
+	            data.opportunity = Object.assign({}, this.state.item, { backgrounds: data.opportunity.backgrounds }, { skills: data.opportunity.skils });
+	            _axios2.default.patch("http://gisapi-web-staging-1636833739.eu-west-1.elb.amazonaws.com/v2/opportunities/529?access_token=dd0df21c8af5d929dff19f74506c4a8153d7acd34306b9761fd4a57cfa1d483c", data).then(function (response) {
+	                console.log(response);
+	            }).catch(function (err) {
+	                console.log(err);
+	            });
+	        }
 	    }, {
 	        key: 'renderList',
 	        value: function renderList(item, index) {
